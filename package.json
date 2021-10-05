@@ -1,0 +1,22 @@
+{
+  "name": "microservice",
+  "version": "1.0.0",
+  "description": "code for microservice",
+  "main": "./monolithic/monolithic.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ggh0223/microservice.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ggh0223/microservice/issues"
+  },
+  "homepage": "https://github.com/ggh0223/microservice#readme",
+  "dependencies": {
+    "mysql": "^2.18.1"
+  }
+}
