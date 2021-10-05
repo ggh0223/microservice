@@ -63,8 +63,6 @@ function onRequest (res, method, pathname, params) {
       res.writeHead(404);
       return res.end()
   }
-
-  res.end("response")
 }
 
 /*

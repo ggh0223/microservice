@@ -5,6 +5,28 @@ const con = {
     password: 'service',
     database: 'monolithic'
 }
+exports.onRequest = function (res, method, pathname, params, cb) {
+
+    //메서드별로 기능 분기
+    switch (method) {
+        case "POST" : 
+            return register(method, pathname, params, (response) => {
+                process.nextTick(cb, res, response)
+            })
+        case "GET" : 
+            return inquiry(method, pathname, params, (response) => {
+                process.nextTick(cb, res, response)
+            })
+        case "DELETE" : 
+            return unregister(method, pathname, params, (response) => {
+                process.nextTick(cb, res, response)
+            })
+        default :
+            return process.nextTick(cb, res, null)
+
+    }
+}
+
 /*
 상품 등록 기능
 */
@@ -90,27 +112,5 @@ function unregister (method, pathname, params, cb) {
             cb(response);
         })
         connection.end();
-    }
-}
-
-exports.onRequest = function (res, method, pathname, params, cb) {
-
-    //메서드별로 기능 분기
-    switch (method) {
-        case "GET" : 
-            return register(method, pathname, params, (response) => {
-                process.nextTick(cb, res, response)
-            })
-        case "POST" : 
-            return inquiry(method, pathname, params, (response) => {
-                process.nextTick(cb, res, response)
-            })
-        case "DELETE" : 
-            return unregister(method, pathname, params, (response) => {
-                process.nextTick(cb, res, response)
-            })
-        default :
-            return process.nextTick(cb, res, null)
-
     }
 }
