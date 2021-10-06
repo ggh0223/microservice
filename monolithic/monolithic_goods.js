@@ -43,7 +43,7 @@ function register (method, pathname, params, cb) {
         let connection = mysql.createConnection(con);
         connection.connect();
         connection.query(
-        "INSERT INTO goods(name, category, price, decsription) values(?, ?, ?, ?)", 
+        "INSERT INTO goods(name, category, price, description) values(?, ?, ?, ?)", 
         [params.name, params.category, params.price, params.description], 
         (error, result, fields) => {
             console.log("result :", result)
