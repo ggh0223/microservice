@@ -23,4 +23,4 @@ class purchases extends require("./server.js") {
     }
 }
 
-new members();
+new purchases();
