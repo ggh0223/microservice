@@ -87,27 +87,30 @@ function onRequest (res, method, pathname, params) {
     let key = method + pathname;
     let client = mapUrls[key];
 
-    if (client === null) { // 처리 가능한 API 만 처리
+    if (client === undefined) { // 처리 가능한 API 만 처리
         res.write(404);
         res.end();
         return
     } else {
         params.key = index; // 고유키발금
+        
         let packet = {
             uri : pathname,
             method : method,
             params : params
         };
+        
+        
         mapResponse[index] = res; // 요청에 대한 응답객체 저장
 
         index++; // 고유값 증가
 
-        if (mapRR[key] === null) { //라운드 로빈 처리
+        if (mapRR[key] === undefined) { //라운드 로빈 처리
             mapRR[key] = 0;
-            
+             
         }
         mapRR[key]++;
-        client[mapRR[key]%client.length].write(packet); // 마이크로서비스에 요청
+        client[mapRR[key] % client.length].write(packet); // 마이크로서비스에 요청  
         
     }
 }
@@ -119,7 +122,7 @@ function onDistribute (data) {
     for (let n in data.params) {
         let node = data.params[n];
         let key = node.host + ":" + node.port;
-        if (mapClients[key] === null && node.name !== "gate") {
+        if (mapClients[key] === undefined && node.name !== "gate") {
             let client = new tcpClient(node.host, node.port, onCreateClient, onReadClient, onEndClient, onErrorClient);
 
             // 마이크로서비스 연결 정보
@@ -130,7 +133,7 @@ function onDistribute (data) {
             // 마이크로서비스 URL 정보 저장
             for (let m in node.urls) {
                 let key = node.urls[m];
-                if (mapUrls[key] === null) {
+                if (mapUrls[key] === undefined) {
                     mapUrls[key] = [];
                 }
                 mapUrls[key].push(client);

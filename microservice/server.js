@@ -60,28 +60,29 @@ class tcpServer {
         console.log("onClose", socket.remoteAddress, socket.remotePort)
     }
 
-    connectDistributor (host, port, onNoti) {
-        let packet = {
+    connectDistributor (host, port, onNoti) { // Distribute 접속함수
+        let packet = {  // Distributor 에 전달할 패킷 정의
             uri: "/distributes",
             method: "POST",
             key: 0,
             params: this.context
         };
 
-        let isConnectedDistributor = false;
+        let isConnectedDistributor = false; // 접속상태
 
+        // Client 클래스 인스턴스 생성
         this.clientDistributor = new tcpClient(host, port, 
-        (options) => {
+        (options) => { // 접속이벤트
             isConnectedDistributor = true;
             this.clientDistributor.write(packet);
         },
-        (options, data) => {
+        (options, data) => { // 데이터 수신
             onNoti(data)
         },
-        (options) => {
+        (options) => { // 접속 종료 이벤트
             isConnectedDistributor = false;
         },
-        (options) => {
+        (options) => { // 에러 이벤트
             isConnectedDistributor = false;
         })
 

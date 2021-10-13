@@ -26,7 +26,6 @@ class tcpClient {
         this.client.on('data', (data) => {
             let sz = this.merge ? this.merge + data.toString() : data.toString()
             let arr = sz.split("¶")
-            console.log(sz)
 
             for (let n in arr) {
                 if (sz.charAt(sz.length-1) !== "¶" && n === arr.length-1) {

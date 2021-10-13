@@ -31,6 +31,7 @@ exports.onRequest = function (res, method, pathname, params, cb) {
 */
 function register (method, pathname, params, cb) {
     let response = {
+        key : params.key,
         errorcode : 0,
         errormessage : "success"
     }
@@ -61,6 +62,7 @@ function register (method, pathname, params, cb) {
 */
 function inquiry (method, pathname, params, cb) {
     let response = {
+        key : params.key,
         errorcode : 0,
         errormessage : "success"
     }
@@ -97,6 +99,7 @@ function inquiry (method, pathname, params, cb) {
 */
 function unregister (method, pathname, params, cb) {
     let response = {
+        key : params.key,
         errorcode : 0,
         errormessage : "success"
     }

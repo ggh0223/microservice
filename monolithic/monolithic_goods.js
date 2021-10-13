@@ -32,6 +32,7 @@ exports.onRequest = function (res, method, pathname, params, cb) {
 */
 function register (method, pathname, params, cb) {
     let response = {
+        key : params.key,
         errorcode : 0,
         errormessage : "success"
     }
@@ -46,8 +47,6 @@ function register (method, pathname, params, cb) {
         "INSERT INTO goods(name, category, price, description) values(?, ?, ?, ?)", 
         [params.name, params.category, params.price, params.description], 
         (error, result, fields) => {
-            console.log("result :", result)
-            console.log("fields :", fields)
             if (error) {
                 response.errorcode = 1;
                 response.errormessage = error;
@@ -62,6 +61,7 @@ function register (method, pathname, params, cb) {
 */
 function inquiry (method, pathname, params, cb) {
     let response = {
+        key : params.key,
         errorcode : 0,
         errormessage : "success"
     }
@@ -71,8 +71,6 @@ function inquiry (method, pathname, params, cb) {
     connection.query(
     "SELECT * FROM goods", 
     (error, result, fields) => {
-        console.log("result :", result)
-        console.log("fields :", fields)
         if (error || result.length === 0) {
             response.errorcode = 1;
             response.errormessage = error ? error : "no data";
@@ -89,6 +87,7 @@ function inquiry (method, pathname, params, cb) {
 */
 function unregister (method, pathname, params, cb) {
     let response = {
+        key : params.key,
         errorcode : 0,
         errormessage : "success"
     }
@@ -103,8 +102,6 @@ function unregister (method, pathname, params, cb) {
         "DELETE FROM goods WHERE id = ?", 
         [params.id], 
         (error, result, fields) => {
-            console.log("result :", result)
-            console.log("fields :", fields)
             if (error) {
                 response.errorcode = 1;
                 response.errormessage = error;
