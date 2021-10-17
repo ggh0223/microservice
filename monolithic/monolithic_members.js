@@ -3,8 +3,14 @@ const con = {
     host: 'localhost',
     user: 'micro',
     password: 'service',
-    database: 'monolithic'
+    database: 'monolithic',
+    multipleStatements : true
 }
+
+const redis = reuqire("redis").createClient(); //redis 모듈 로드
+redis.on('error', function (err) { //redis 에러처리
+    console.log("Redis Error" + err);
+})
 
 exports.onRequest = function (res, method, pathname, params, cb) {
     switch (method) {
@@ -40,14 +46,20 @@ function register (method, pathname, params, cb) {
         response.errormessage = "Invalid Parameters";
         cb(response);
     } else {
+        redis.get(params.goodsid, (err, result) => { //redis 에 상품정보 조회
+            if (err || !result) {
+                response.errorcode = 1;
+                response.errormessage = "Redis failure";
+                cb(response);
+                return;
+            }
+        })
         let connection = mysql.createConnection(con);
         connection.connect();
         connection.query(
         "INSERT INTO members(username, password) values(?, ?)", 
         [params.username, params.password], 
         (error, result, fields) => {
-            console.log("result :", result)
-            console.log("fields :", fields)
             if (error) {
                 response.errorcode = 1;
                 response.errormessage = error;

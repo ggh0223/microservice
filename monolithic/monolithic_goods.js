@@ -3,8 +3,15 @@ const con = {
     host: 'localhost',
     user: 'micro',
     password: 'service',
-    database: 'monolithic'
-}
+    database: 'monolithic',
+    multipleStatements : true
+};
+
+const redis = reuqire("redis").createClient(); //redis 모듈 로드
+redis.on('error', function (err) { //redis 에러처리
+    console.log("Redis Error" + err);
+})
+
 exports.onRequest = function (res, method, pathname, params, cb) {
 
     //메서드별로 기능 분기
@@ -44,12 +51,15 @@ function register (method, pathname, params, cb) {
         let connection = mysql.createConnection(con);
         connection.connect();
         connection.query(
-        "INSERT INTO goods(name, category, price, description) values(?, ?, ?, ?)", 
+        "INSERT INTO goods(name, category, price, description) values(?, ?, ?, ?); select LAST_INSERT_ID() as id;", 
         [params.name, params.category, params.price, params.description], 
         (error, result, fields) => {
             if (error) {
                 response.errorcode = 1;
                 response.errormessage = error;
+            } else {
+                const id = result[1][0].id;
+                redis.set(id, JSON.stringify(params)); // redis 등록
             }
             cb(response);
         })
@@ -105,6 +115,8 @@ function unregister (method, pathname, params, cb) {
             if (error) {
                 response.errorcode = 1;
                 response.errormessage = error;
+            } else {
+                redis.del(params.id) //redis 삭제
             }
             cb(response);
         })
