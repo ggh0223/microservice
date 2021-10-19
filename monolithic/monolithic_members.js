@@ -7,7 +7,7 @@ const con = {
     multipleStatements : true
 }
 
-const redis = reuqire("redis").createClient(); //redis 모듈 로드
+const redis = require("redis").createClient(); //redis 모듈 로드
 redis.on('error', function (err) { //redis 에러처리
     console.log("Redis Error" + err);
 })

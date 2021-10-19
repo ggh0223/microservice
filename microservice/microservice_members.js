@@ -11,7 +11,7 @@ class members extends require("./server.js") {
             ["POST/members", "GET/members", "DELETE/members"]
         );
 
-        this.connectDistributor("127.0.0.1", 9000, (data) => {
+        this.connectToDistributor("127.0.0.1", 9000, (data) => {
             console.log("Distributor Notification", data);
         })
     }

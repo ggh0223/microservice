@@ -5,6 +5,7 @@ const tcpClient = require('./client.js');
 
 class tcpServer {
     constructor (name, port, urls) {
+        this.logTcpClient = null; // 로그 관리 마이크로서비스 연결 클라이언트
         this.context = {
             port: port,
             name: name,
@@ -25,8 +26,6 @@ class tcpServer {
             socket.on("data", (data) => {
                 let key = socket.remoteAddress + ":" + socket.remotePort;
                 let sz = this.merge[key] ? this.merge[key] + data.toString() : data.toString();
-                console.log(key)
-                console.log(sz)
                 let arr = sz.split("¶");
 
                 for (let n in arr) {
@@ -36,6 +35,7 @@ class tcpServer {
                     } else if (arr[n] === "") {
                         break;
                     } else {
+                        this.writeLog(arr[n]) // request 로그
                         this.onRead(socket, JSON.parse(arr[n]));
                     }
                 }
@@ -60,7 +60,7 @@ class tcpServer {
         console.log("onClose", socket.remoteAddress, socket.remotePort)
     }
 
-    connectDistributor (host, port, onNoti) { // Distribute 접속함수
+    connectToDistributor (host, port, onNoti) { // Distribute 접속함수
         let packet = {  // Distributor 에 전달할 패킷 정의
             uri: "/distributes",
             method: "POST",
@@ -77,6 +77,18 @@ class tcpServer {
             this.clientDistributor.write(packet);
         },
         (options, data) => { // 데이터 수신
+
+            //로그 관리 마이크로서비스 연결
+            if (!this.logTcpClient && this.context.name !== 'logs') {
+                for (let n in data.params) {
+                    const ms = data.params[n];
+                    if (ms.name === "logs") {
+                        this.connectToLog(ms.host, ms.port);
+                        break;
+                    }
+                }
+            }
+
             onNoti(data)
         },
         (options) => { // 접속 종료 이벤트
@@ -91,6 +103,37 @@ class tcpServer {
                 this.clientDistributor.connect();
             }
         }, 3000);
+    }
+
+    connectToLog(host, port) {
+        this.logTcpClient = new tcpClient(
+            host,
+            port,
+            (options) => {
+
+            },
+            (options) => {
+                this.logTcpClient = null;
+            },
+            (options) => {
+                this.logTcpClient = null;
+            }
+        );
+        this.logTcpClient.connect();
+    }
+
+    writeLog(log) {
+        if (this.logTcpClient) {
+            const packet = {
+                uri : "/logs",
+                method : "POST",
+                key : 0,
+                params : log
+            };
+            this.logTcpClient.write(packet);
+        } else {
+            console.log(log)
+        }
     }
 
 }
