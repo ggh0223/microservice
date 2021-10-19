@@ -1,6 +1,7 @@
 'use strict'
 
 const cluster = require("cluster");
+const fs = require("fs");
 
 class logs extends require('./server.js') {
     constructor () {
@@ -9,7 +10,11 @@ class logs extends require('./server.js') {
             ["POST/logs"]
         )
         
-
+        // 스트림 생성
+        // 책에서는 단순하게 모든 로그를 한 파일에 저장하지만
+        // 실제로는 각 시스템에 맞게 로그를 모아 저장하는 것이 더 효율적이다.
+        this.writestream = fs.createWriteStream('./log.txt', { flags : "a"});
+    
         this.connectToDistributor("127.0.0.1", 9000, (data) => {
             console.log("Distributor Notification", data)
         })
@@ -22,6 +27,7 @@ class logs extends require('./server.js') {
         + JSON.stringify(data) + '/n';
 
         console.log(sz)
+        this.writestream.write(sz) // 로그 파일 저장
     }
 
 }

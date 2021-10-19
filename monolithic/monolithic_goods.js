@@ -75,6 +75,23 @@ function inquiry (method, pathname, params, cb) {
         errorcode : 0,
         errormessage : "success"
     }
+
+    //redis 테스트 코드
+    /* if (redis.get("2")) { 
+        redis.get("2", (err, data) => {
+            if (err) {
+                response.errorcode = 1;
+                response.errormessage = error ? error : "no data";
+            } else {
+                response.result = data; -> JSON형태의 문자열이므로 Parsing해줘야한다.
+                
+            }
+            cb(response);
+        });
+        
+    } else { 
+
+    }*/
     
     let connection = mysql.createConnection(con);
     connection.connect();
@@ -90,6 +107,7 @@ function inquiry (method, pathname, params, cb) {
         cb(response);
     })
     connection.end();
+
     
 }
 /*
