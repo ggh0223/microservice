@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/ggh0223/microservice#readme",
   "dependencies": {
+    "express": "^4.17.1",
+    "fwsp-hydra-express": "^1.0.0",
+    "hydra": "^1.9.2",
     "mysql": "^2.18.1",
     "redis": "^3.1.2"
   }

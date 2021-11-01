@@ -1,0 +1,15 @@
+{
+  "environment": "development",
+  "hydra": {
+    "serviceName": "micro-service",
+    "serviceIP": "",
+    "servicePort": 0,
+    "serviceType": "micro",
+    "serviceDescription": "study",
+    "redis": {
+      "url": "127.0.0.1",
+      "port": 6379,
+      "db": 15
+    }
+  }
+}
